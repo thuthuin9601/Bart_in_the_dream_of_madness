@@ -27,29 +27,35 @@ window.addEventListener('load', function(){
         ctx.fillText('Your score: '+score, 20, 50);
         ctx.fillStyle = 'yellow'
         ctx.fillText('Your score: '+score, 22, 52);
+        if(gameOver){
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'red';
+            ctx.fillText ('GAME OVER, refresh page to try again!', canvas.width/2, 200);
+            ctx.fillStyle = 'yellow';
+            ctx.fillText ('GAME OVER, refresh page to try again!', canvas.width/2 + 2, 200+2);
+        }
     }
     
     function checkCollision(){
         enemies.forEach(object => {
-            let i = 0
-            for(i = 0;i<enemies.length;i++){
-                if(enemies[i] == running){
-                    if(isRectCollision(player.x+32, player.y+16, player.rectW, player.rectH, running.x+10, running.y+25, running.rectWidth,running.rectHeight)){
-                        gameOver = true;
-                    }
-                    if(player.currentState == player.states[5] && isRectCollision(player.x+64, player.y+32, 16,44, running.x+10, running.y+25, running.rectWidth,running.rectHeight)){
-                        running.markedForDeletion = true;
-                        explosions.push(new Explosion(running.x, running.y, running.width));
-                    }                 
+            if(object == running){
+                if(isRectCollision(player.x+32, player.y+16, player.rectW, player.rectH, running.x+10, running.y+25, running.rectWidth,running.rectHeight)){
+                    gameOver = true;
                 }
-                if(enemies[i] == flying){
-                    if(isRectCircleCollision(player.x+32, player.y+16, player.rectW, player.rectH,flying.x+flying.width/2,flying.y+flying.height/2,flying.circleRadius)){
-                        gameOver = true;
-                    }
-                    if(player.currentState == player.states[5] && isCircleCollision(player.x+player.width/2,player.y+player.height/2,player.hammerRadius, flying.x+flying.width/2,flying.y+flying.height/2,flying.circleRadius)){
-                        flying.markedForDeletion = true;
-                        explosions.push(new Explosion(flying.x, flying.y, flying.width));
-                    }
+                else if(player.currentState == player.states[5] && isRectCollision(player.x+64, player.y+32, 16,44, running.x+10, running.y+25, running.rectWidth,running.rectHeight)){
+                running.markedForDeletion = true;
+                explosions.push(new Explosion(running.x, running.y, running.width));
+                }                 
+            }
+            else if(object == flying){
+                if(isRectCircleCollision(player.x+32, player.y+16, player.rectW, player.rectH,flying.x+flying.width/2,flying.y+flying.height/2,flying.circleRadius)){
+                    gameOver = true;
+                }
+                else if(player.currentState == player.states[5] &&
+                    isCircleCollision(player.x+player.width/2,player.y+player.height/2,player.hammerRadius, flying.x+flying.width/2,flying.y+flying.height/2,flying.circleRadius)
+                    ||isRectCircleCollision(player.x+64, player.y+32, 16,44,flying.x+flying.width/2,flying.y+flying.height/2,flying.circleRadius)){
+                    flying.markedForDeletion = true;
+                    explosions.push(new Explosion(flying.x, flying.y, flying.width));
                 }
             }
         });
