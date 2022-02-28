@@ -1,5 +1,5 @@
 import gameObjects from "./background.js"
-import {enemies, running, flying, jumping} from "./enemies.js"
+import {enemies, running, flying} from "./enemies.js"
 import updateEnemy from "./enemies.js"
 import Player from './bart-player.js';
 import InputHandler from './bart-input.js'
@@ -38,28 +38,9 @@ window.addEventListener('load', function(){
                         gameOver = true;
                     }
                     if(player.currentState == player.states[5] && isRectCollision(player.x+64, player.y+32, 16,44, running.x+10, running.y+25, running.rectWidth,running.rectHeight)){
-                    running.markedForDeletion = true;
-                    explosions.push(new Explosion(running.x, running.y, running.width));
+                        running.markedForDeletion = true;
+                        explosions.push(new Explosion(running.x, running.y, running.width));
                     }                 
-                }
-                if(enemies[i] == jumping){
-                    if(isRectCollision(player.x+32, player.y+16, player.rectW, player.rectH,jumping.x+70, jumping.y+42, jumping.rectWidth,jumping.rectHeight)){
-                        gameOver = true;
-                    }
-                    if(isRectCircleCollision(player.x+32, player.y+16, player.rectW, player.rectH,jumping.x+jumping.width/2-15,jumping.y+jumping.height/2+10,jumping.width/2-40)){
-                        gameOver = true;
-                    }
-                    // if(player.currentState == player.states[5] && player.onGround()
-                    // && isRectCircleCollision(player.x+32, player.y+16, player.rectW, player.rectH,jumping.x+jumping.width/2-15,jumping.y+jumping.height/2+10,jumping.width/2-40)){
-                    //     jumping.markedForDeletion = true;
-                    //     explosions.push(new Explosion(jumping.x, jumping.y, jumping.width));
-                    // }
-                    // if(player.currentState == player.states[5] && !player.onGround()
-                    //     && (isRectCircleCollision(jumping.x+70, jumping.y+42, jumping.rectWidth,jumping.rectHeight,player.x+player.width/2,player.y+player.height/2,player.hammerRadius)
-                    //     ||isCircleCollision(player.x+player.width/2,player.y+player.height/2,player.hammerRadius,jumping.x+jumping.width/2-15,jumping.y+jumping.height/2+10,jumping.width/2-40))){
-                    //         jumping.markedForDeletion = true;
-                    //         explosions.push(new Explosion(jumping.x, jumping.y, jumping.width));
-                    //     }
                 }
                 if(enemies[i] == flying){
                     if(isRectCircleCollision(player.x+32, player.y+16, player.rectW, player.rectH,flying.x+flying.width/2,flying.y+flying.height/2,flying.circleRadius)){

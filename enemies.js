@@ -7,14 +7,13 @@ let enemyTimer = 0;
 
 const flyingDino = new Image();
 flyingDino.src = 'flying dino.png';
-const jumpingSpider = new Image();
-jumpingSpider.src = 'spider.png';
+
 const runningDino = new Image();
 runningDino.src = 'running dino.png';
 
 export let enemies = [];
 
-const enemyTypes = ['running','flying','jumping'];
+const enemyTypes = ['running','flying'];
 
 class Enemy {
     constructor(){
@@ -84,13 +83,13 @@ class FlyingDino extends Enemy {
         this.spriteWidth = 1200/7;
         this.spriteHeight = 151;
         this.x = this.gameWidth;
-        this.y =this.gameHeight*Math.random() *0.6;
+        this.y =this.gameHeight-this.gameHeight*(Math.random()*0.5+0.2)
         this.width = this.spriteWidth/2;
         this.height = this.spriteHeight/2;
         this.speed = Math.random()*0.1 + 0.1;
         this.image = flyingDino;
-        this.angle = 0;
-        this.curve = Math.random() * 3;
+        this.angle = 2;
+        this.curve = Math.random() * 10;
         this.circleRadius = this.width/2-25;
     }
     update(deltaTime){
@@ -105,42 +104,8 @@ class FlyingDino extends Enemy {
         ctx.stroke();
     }
 };
-class JumpingSpider extends Enemy {
-    constructor(){
-        super();
-        this.maxFrame = 7; 
-        this.spriteWidth = 1254/8;
-        this.spriteHeight = 91;
-        this.x = this.gameWidth;
-        this.y =this.gameHeight*Math.random() *0.6;
-        this.width = this.spriteWidth;
-        this.height = this.spriteHeight;
-        this.speed = Math.random()*0.1 + 0.1;
-        this.image = jumpingSpider;
-        this.vy = 0;
-        this.weight = 1;
-        this.rectWidth = 70;
-        this.rectHeight = 25;
-        this.circleRadius = this.width/2-40
-    }
-    update(deltaTime){
-        super.update(deltaTime);
-        this.y += this.vy;
-        if(this.y < this.gameHeight - this.height - 25){
-            this.vy += this.weight;// khi vy <0 thì nvat sẽ nhảy lên, đạt đỉnh khi vy = 0, vy >0 sẽ đi xuống
-        } else {
-            this.vy = -15;
-        }
-    }
-    draw(ctx){
-        super.draw(ctx);
-        ctx.beginPath();
-        ctx.arc(this.x+this.width/2-15,this.y+this.height/2+10,this.circleRadius,0,Math.PI*2);
-        ctx.stroke();
-        ctx.strokeRect(this.x+70, this.y+42, this.rectWidth,this.rectHeight);
-    }
-};
-function updateEnemy(deltaTime, ctx){
+
+function updateEnemy(deltaTime){
     enemies =  enemies.filter(object => !object.markedForDeletion)   
     if(enemyTimer>enemyInterval){
         addNewEnemy();
@@ -159,19 +124,15 @@ export default updateEnemy;
 // }
 export let running;
 export let flying;
-export let jumping;
+
 function addNewEnemy(){
     running = new RunningDino();
     flying = new FlyingDino();
-    jumping = new JumpingSpider();
     let randomEnemy = enemyTypes[Math.floor(Math.random()*enemyTypes.length)];
     if (randomEnemy == 'running'){
         enemies.push(running);
     }
     else if (randomEnemy == 'flying'){
         enemies.push(flying);
-    }
-    else if (randomEnemy == 'jumping'){
-        enemies.push(jumping);
     }
 }
