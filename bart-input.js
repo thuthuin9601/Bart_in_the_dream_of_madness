@@ -11,7 +11,6 @@ export default class InputHandler{
                 this.keys.splice(this.keys.indexOf(e.key), this.keys.length);
                 this.keys.push(e.key);
             }
-            // console.log(this.keys);
         });
         window.addEventListener('keyup', (e) => {
             if(e.key === "ArrowDown" || 
@@ -22,7 +21,6 @@ export default class InputHandler{
                 this.keys.splice(this.keys.indexOf(e.key), this.keys.length);
                 this.keys.push('none');
             }
-            // console.log(this.keys);
         });
     }
 }

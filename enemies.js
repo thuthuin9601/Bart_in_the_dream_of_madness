@@ -1,8 +1,10 @@
+import { Rect, Circle } from "./checkCollision.js";
 const CANVAS_WIDTH = 768;
 const CANVAS_HEIGHT = 576;
 
-let enemyInterval = 2000;
+let enemyInterval = 1500;
 let enemyTimer = 0;
+export function modifyenemyInterval( value ) { enemyInterval = value }
 
 
 const flyingDino = new Image();
@@ -22,8 +24,8 @@ class Enemy {
         this.markedForDeletion = false;
         this.frameX=0;
        
-        // this.fps = 20;
-        this.frameInterval = 100;// có thể chia fps
+        this.fps = 60;
+        this.frameInterval = 1000/this.fps;// có thể chia fps
         this.frameTimer = 0;
     }
     update(deltaTime){
@@ -62,18 +64,15 @@ export class RunningDino extends Enemy {
         this.height = this.spriteHeight;
         this.speed = Math.random()*0.1 + 0.1;
         this.image = runningDino;
-        // this.rectX = this.x+10;
-        // this.rectY = this.y+25;
-        this.rectWidth = 70;
-        this.rectHeight = 42;
-        // console.log(this.rectX);
+        this.enemyCircle = new Circle(this.x+this.width/2,this.y+this.height/2+20, this.width/2-15)
     }
     update(deltaTime){
         super.update(deltaTime);
+        this.enemyCircle.x = this.x+this.width/2;
     }
     draw(ctx){
         super.draw(ctx);
-        ctx.strokeRect(this.x+10, this.y+25, this.rectWidth,this.rectHeight);
+        this.enemyCircle.strokeCircle(ctx);
     }
 };
 class FlyingDino extends Enemy {
@@ -90,18 +89,18 @@ class FlyingDino extends Enemy {
         this.image = flyingDino;
         this.angle = 2;
         this.curve = Math.random() * 10;
-        this.circleRadius = this.width/2-25;
+        this.enemyCircle = new Circle(this.x+this.width/2,this.y+this.height/2,this.width/2-25);
     }
     update(deltaTime){
         super.update(deltaTime);
         this.y += Math.sin(this.angle)* this.curve;
         this.angle += 0.1;
+        this.enemyCircle.x = this.x+this.width/2;
+        this.enemyCircle.y = this.y+this.height/2;
     }
     draw(ctx){
         super.draw(ctx);
-        ctx.beginPath();
-        ctx.arc(this.x+this.width/2,this.y+this.height/2,this.circleRadius,0,Math.PI*2)
-        ctx.stroke();
+        this.enemyCircle.strokeCircle(ctx);
     }
 };
 
@@ -111,19 +110,17 @@ function updateEnemy(deltaTime){
         addNewEnemy();
         enemyTimer = 0;
 
-        // console.log(enemies);
+        console.log(enemies);
     }
     else {
         enemyTimer+=deltaTime;
     }
     enemies.forEach(object => object.update(deltaTime));
 }
-export default updateEnemy;
-// function draw(){
-//     enemies.forEach(object => object.draw(ctx));
-// }
+
 export let running;
 export let flying;
+export default updateEnemy;
 
 function addNewEnemy(){
     running = new RunningDino();

@@ -1,10 +1,13 @@
 import gameObjects from "./background.js"
-import {enemies, running, flying} from "./enemies.js"
+import {enemies, modifyenemyInterval} from "./enemies.js"
 import updateEnemy from "./enemies.js"
 import Player from './bart-player.js';
 import InputHandler from './bart-input.js'
-import isRectCollision,{isRectCircleCollision, isCircleCollision} from './checkCollision.js'
+// import isRectCollision,{isRectCircleCollision, isCircleCollision} from './checkCollision.js'
+import {isCircleCollision, isCircleRectCollision} from './checkCollision.js'
 import Explosion from './explosion.js';
+
+
 
 window.addEventListener('load', function(){
     const canvas = document.getElementById('canvas1');
@@ -38,26 +41,20 @@ window.addEventListener('load', function(){
     
     function checkCollision(){
         enemies.forEach(object => {
-            if(object == running){
-                if(isRectCollision(player.x+32, player.y+16, player.rectW, player.rectH, running.x+10, running.y+25, running.rectWidth,running.rectHeight)){
+            // if(object == running){
+                if(isCircleRectCollision(object.enemyCircle,player.playerRect)){
                     gameOver = true;
                 }
-                else if(player.currentState == player.states[5] && isRectCollision(player.x+64, player.y+32, 16,44, running.x+10, running.y+25, running.rectWidth,running.rectHeight)){
-                running.markedForDeletion = true;
-                explosions.push(new Explosion(running.x, running.y, running.width));
-                }                 
-            }
-            else if(object == flying){
-                if(isRectCircleCollision(player.x+32, player.y+16, player.rectW, player.rectH,flying.x+flying.width/2,flying.y+flying.height/2,flying.circleRadius)){
-                    gameOver = true;
+                else if (player.currentState == player.states[5] && player.onGround()
+                && isCircleRectCollision(object.enemyCircle,player.skateBoard)){
+                    object.markedForDeletion = true;
+                    explosions.push(new Explosion(object.x, object.y, object.width));
                 }
-                else if(player.currentState == player.states[5] &&
-                    isCircleCollision(player.x+player.width/2,player.y+player.height/2,player.hammerRadius, flying.x+flying.width/2,flying.y+flying.height/2,flying.circleRadius)
-                    ||isRectCircleCollision(player.x+64, player.y+32, 16,44,flying.x+flying.width/2,flying.y+flying.height/2,flying.circleRadius)){
-                    flying.markedForDeletion = true;
-                    explosions.push(new Explosion(flying.x, flying.y, flying.width));
+                else if (player.currentState == player.states[5] && !player.onGround()
+                && isCircleCollision(object.enemyCircle,player.hammer)){
+                    object.markedForDeletion = true;
+                    explosions.push(new Explosion(object.x, object.y, object.width));
                 }
-            }
         });
     }
     
@@ -67,6 +64,15 @@ window.addEventListener('load', function(){
         lastTime = timeStamp;
         //background
         gameObjects.forEach(object => {
+            if(player.currentState == player.states[1]||player.currentState == player.states[5] && player.speed>0){
+                object.speed = player.speed+object.speedModifier;
+            }
+            else if(player.currentState == player.states[2]){
+                object.speed = object.speedModifier/2;
+            }
+            else{
+                object.speed = object.speedModifier
+            }
             object.update();
             object.draw(ctx);
         });
@@ -82,13 +88,27 @@ window.addEventListener('load', function(){
                 score++;
             }
         });
+        //level
+        if(score >= 20){
+            modifyenemyInterval(1500);
+        }
+        else if(score >= 40){
+            modifyenemyInterval(1200);
+        }
+        else if(score >= 60){
+            modifyenemyInterval(1000);
+        }
+        else if(score >= 100){
+            modifyenemyInterval(800);
+        }
         //check collision
         checkCollision();
         //explosion
-        
-        
         displayStatusText(ctx);
-        if(!gameOver) requestAnimationFrame(animate);
+        if(!gameOver) {
+            requestAnimationFrame(animate);
+        }
     };
     animate(0);
+   
 });

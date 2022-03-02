@@ -1,48 +1,56 @@
-function isRectCollision(rect1X, rect1Y, rect1W, Rect1H, rect2X, rect2Y, rect2W, Rect2H) {
-    let distX = (rect1X + (rect1W/2)) - (rect2X + (rect2W)/2);
-    if (distX < 0)
-        distX = -distX;
-
-    const distW = (rect1W + rect2W)/2;
-
-    let distY =(rect1Y + (Rect1H/2)) - (rect2Y + (Rect2H)/2);
-    if(distY < 0)
-        distY = -distY;
-
-    const distH = (Rect1H + Rect2H)/2;
-
-    return (distX <= distW && distY <= distH);
+export class Rect{
+    constructor(x, y, width, height){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+    strokeRectangle(ctx){
+        ctx.strokeRect(this.x, this.y, this.width, this.height);
+    }
 }
-export function isRectCircleCollision(rectX, rectY, rectW, rectH, cirX, cirY, cirR ){
-    let Ax = cirX;
-    let Ay = cirY;
+export class Circle{
+    constructor(x, y, radius){
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+    }
+    strokeCircle(ctx){
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.radius,0,Math.PI*2)
+        ctx.stroke();
+    }
+}
 
-    let rect_left = rectX;
-    let rect_top = rectY;
-    let rect_right = rectX + rectW;
-    let rect_bottom =rectY + rectH;
+export function isCircleCollision(circle1, circle2){
+    let dx = circle2.x - circle1.x;
+    let dy = circle2.y - circle1.y;
+    let distance = Math.sqrt(dx*dx + dy*dy);
+    let sumOfRadi = circle1.radius + circle2.radius;
+    return (distance <= sumOfRadi) ;
+}
 
-    if (cirX < rect_left)
+export function isCircleRectCollision(cir, rect) {
+    let Ax = cir.x;
+    let Ay = cir.y;
+
+    let rect_left = rect.x;
+    let rect_top = rect.y;
+    let rect_right = rect.x + rect.width;
+    let rect_bottom = rect.y + rect.height;
+
+    if (cir.x < rect_left)
         Ax = rect_left;
-    else if (cirX > rect_right)
+    else if (cir.x > rect_right)
         Ax = rect_right;
 
-    if (cirY < rect_top)
+    if (cir.y < rect_top)
         Ay = rect_top;
-    else if (cirY > rect_bottom)
+    else if (cir.y > rect_bottom)
         Ay = rect_bottom;
 
-    let dx = cirX - Ax;
-    let dy = cirY - Ay;
+    let dx = cir.x - Ax;
+    let dy = cir.y - Ay;
 
-    return (dx * dx + dy * dy) <= cirR * cirR;
+    return (dx * dx + dy * dy) <= cir.radius * cir.radius;
 }
-export function isCircleCollision(Cir1X, Cir1Y, Cir1R, Cir2X, Cir2Y, Cir2R){
-    let dx = Cir1X - Cir2X;
-    let dy = Cir1Y - Cir2Y;
-    let distance = Math.sqrt(dx*dx + dy*dy);
-    return distance <= Cir1R + Cir2R;
-}
-
-
-export default isRectCollision;

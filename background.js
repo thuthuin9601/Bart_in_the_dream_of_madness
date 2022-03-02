@@ -17,12 +17,6 @@ class Layer{
         this.speed = gamespeed*this.speedModifier;
     }
     update(){
-        // if(player.currentState = player.states[1]){
-        //     this.speed = player.speed*this.speedModifier;
-        // }
-            this.speed = gamespeed*this.speedModifier;
-        
-        
         if (this.x <= -this.width){
             this.x = this.width + this.x2 - this.speed;
         }
