@@ -8,7 +8,6 @@ import {isCircleCollision, isCircleRectCollision} from './checkCollision.js'
 import Explosion from './explosion.js';
 
 
-
 window.addEventListener('load', function(){
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
@@ -103,12 +102,16 @@ window.addEventListener('load', function(){
         }
         //check collision
         checkCollision();
+        
         //explosion
         displayStatusText(ctx);
+        
         if(!gameOver) {
             requestAnimationFrame(animate);
         }
     };
     animate(0);
    
+   
+    
 });

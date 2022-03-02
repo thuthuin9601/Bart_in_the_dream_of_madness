@@ -3,14 +3,24 @@ body {
 }
 #canvas1 {
     position: absolute;
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
+    /* transform: translate(-50%, -50%); */
+    top: 0;
+    left: 0;
     width: 768px;
     height: 576px;
     border: 3px solid rgb(0, 0, 0);
 }
 #bartImage{
     display: none;
+}
+#instruction{
+    position: relative;
+    top: 0;
+    left: 768px;
+}
+#button{
+    position: relative;
+    top: 576px;
+    left: 768px;
 }
 
